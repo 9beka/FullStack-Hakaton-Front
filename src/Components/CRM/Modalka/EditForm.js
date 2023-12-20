@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Button, Upload, Form, Input } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import {  Input } from "antd";
 import { POST_PHOTO } from "../../../Redux/CrmSlicer";
-
-const EditForm = ({ _id, }) => {
+import "./EditForm.scss";
+const EditForm = ({ _id ,openNotification }) => {
   const [file, setFile] = useState();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("image", file);
-    dispatch(POST_PHOTO(formData))
+    formData.append("title", e.target.title.value);
+    formData.append("price", e.target.price.value);
+    formData.append("category", e.target.category.value);
+    dispatch(POST_PHOTO({ formData, _id }));
+    openNotification('bottom' , "edited")
   };
 
   return (
@@ -22,17 +25,16 @@ const EditForm = ({ _id, }) => {
         id="uploadForm"
         encType="multipart/form-data"
       >
-        <input type="text" name="title" placeholder="Title"  />
-        <input type="number" name="price" placeholder="Price"  />
-        <input type="text" name="category" placeholder="Category"  />
-        <input
+        <Input type="text" name="title" placeholder="Title" />
+        <Input type="number" name="price" placeholder="Price" />
+        <Input type="text" name="category" placeholder="Category" />
+        <Input
           type="file"
           name="image"
           accept="image/*"
           onChange={(e) => setFile(e.target.files[0])}
-          required
         />
-        <button type="submit">Добавить продукт</button>
+        <button type="submit">Изменить продукт</button>
       </form>
     </div>
   );

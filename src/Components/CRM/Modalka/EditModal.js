@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal} from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import EditForm from "./EditForm";
-const EditModal = ({ _id }) => {
+const EditModal = ({ _id , openNotification }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const showModal = () => {
@@ -34,7 +34,7 @@ const EditModal = ({ _id }) => {
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <EditForm _id={_id}/>
+        <EditForm _id={_id} openNotification={openNotification}/>
       </Modal>
     </>
   );

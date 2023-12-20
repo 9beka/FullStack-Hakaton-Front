@@ -16,12 +16,7 @@ console.log(validationErrors ,existsUSer );
     dispatch(LOGIN_USER(values))
   };
 
-  const getServerError = (fieldName) => {
-          if (Array.isArray(validationErrors)) {
-            const errorObject = validationErrors.find(err => err.path === fieldName);
-      return errorObject ? errorObject.msg : null;
-    }
-  };
+ 
   return (
    <WrapperHoc>
           <Form
@@ -41,7 +36,6 @@ console.log(validationErrors ,existsUSer );
                  message: "Please input your email!",
                },
              ]}
-             help={getServerError('email')} 
             >
           <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="Email"/>
             </Form.Item>
@@ -53,7 +47,7 @@ console.log(validationErrors ,existsUSer );
                   message: 'Please input your Password!',
                 },
               ]}
-              help={getServerError('password')} 
+              help={existsUSer} 
             >
               <Input
                 prefix={<LockOutlined className="site-form-item-icon" />}
@@ -61,6 +55,7 @@ console.log(validationErrors ,existsUSer );
                 placeholder="Password"
               />
             </Form.Item>
+            <h2>P@ssw0rd</h2>
             <Form.Item>
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox>Remember me</Checkbox>

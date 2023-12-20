@@ -71,13 +71,32 @@ export const DELETE_PRODUCT = createAsyncThunk(
  )
  export const POST_PHOTO = createAsyncThunk(
   "photo/POST_PHOTO",
-  async (formData, { rejectWithValue, dispatch, getState }) => {
-    console.log(formData);
+  async ({formData, _id} ,{ rejectWithValue, dispatch, getState }) => {
+    console.log(formData , _id);
     try {
-      const response = await fetch("http://localhost:5058/items", {
+      const response = await fetch(`http://localhost:5058/items/${_id}`, {
+        method: "PATCH",
+        body: formData,
+      });
+      console.log(response);
+      const data = await response.json();
+      dispatch(GET_FAKESHOP())
+      return data;
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+ export const NEW_PRODUCT = createAsyncThunk(
+  "product/NEW_PRODUCT",
+  async (formData,{ rejectWithValue, dispatch, getState }) => {
+    console.log(formData , "NEW_PRODUCT formDATA" );
+    try {
+      const response = await fetch(`http://localhost:5058/post/new-product`, {
         method: "POST",
         body: formData,
       });
+      console.log(response);
       const data = await response.json();
       dispatch(GET_FAKESHOP())
       return data;
@@ -111,6 +130,18 @@ const CrmSlicer = createSlice({
         console.log("pending", action);
         state.fakeError = null;
       });
+      builder.addCase(NEW_PRODUCT.fulfilled, (state, action) => {
+        console.log("FULLFILLED", action.payload);
+        state.fakeData.push(action.payload);
+      });
+      builder.addCase(NEW_PRODUCT.rejected, (state, action) => {
+        console.log("rejected", action);
+        state.fakeError = action.payload;
+      });
+      builder.addCase(NEW_PRODUCT.pending, (state, action) => {
+        console.log("pending", action);
+        state.fakeError = null;
+      });
       builder.addCase(GET_DETAILS_SHOP.fulfilled, (state, action) => {
         console.log("FULLFILLED", action.payload);
         state.fakeDetail = action.payload;
@@ -126,7 +157,7 @@ const CrmSlicer = createSlice({
       builder.addCase(POST_PHOTO.fulfilled, (state, action) => {
         console.log("FULLFILLED" ,action);
         state.error = null;
-        state.fakeData = state.fakeData.concat(action.payload);
+        state.fakeData = action.payload;
       });
    
    }  

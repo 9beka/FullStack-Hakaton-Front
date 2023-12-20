@@ -28,6 +28,7 @@ export const REGISTR_USER = createAsyncThunk(
 export const LOGIN_USER = createAsyncThunk(
   "register/LOGIN_USER_ASYNC",
   async (formData, { rejectWithValue, dispatch }) => {
+    const { email, password } = formData;
     console.log(formData, "FROM SLICER");
     try {
       const response = await fetch("http://localhost:5058/login", {
@@ -35,7 +36,7 @@ export const LOGIN_USER = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({email, password}),
       });
       console.log(response);
       const finalData = await response.json();
@@ -64,11 +65,7 @@ export const GET_USER = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-
-      // if (!response.ok) {
-      //   throw new Error('Could not fetch user data');
-      // }
-
+     
       const data = await response.json();
       console.log();
       return data;
@@ -94,6 +91,15 @@ const RegistrationSlicer = createSlice({
     setValidationErrors(state, action) {
       state.validationErrors = action.payload;
     },
+    cleaerValidationErrors(state, action) {
+      state.validationErrors = [];
+    },
+    clearUser(state, action) {
+      localStorage.removeItem("token")
+      state.token = null
+
+    },
+  
   },
   extraReducers: (builder) => {
     builder.addCase(REGISTR_USER.fulfilled, (state, action) => {
@@ -113,6 +119,7 @@ const RegistrationSlicer = createSlice({
       console.log("pending", action);
       state.error = null;
       state.existsUSer = null
+      state.validationErrors = []
     });
     builder.addCase(GET_USER.fulfilled, (state, action) => {
       console.log("FULLFILLED", action.payload);
@@ -120,7 +127,6 @@ const RegistrationSlicer = createSlice({
     });
     builder.addCase(GET_USER.rejected, (state, action) => {
       console.log("rejected", action);
-      state.error = action.payload;
     });
     builder.addCase(GET_USER.pending, (state, action) => {
       console.log("pending", action);
@@ -131,9 +137,9 @@ const RegistrationSlicer = createSlice({
       console.log("FULLFILLED", action);
       state.error = null;
       state.existsUSer = action.payload.message
+      state.validation = action.payload
       state.data = action.payload;
       state.token = action.payload.token;
-
     });
     builder.addCase(LOGIN_USER.rejected, (state, action) => {
       console.log("rejected", action);
@@ -142,8 +148,9 @@ const RegistrationSlicer = createSlice({
     builder.addCase(LOGIN_USER.pending, (state, action) => {
       console.log("rejected", action);
       state.existsUSer = null
+      state.validationErrors = []
     });
   },
 });
-export const { setValidationErrors } = RegistrationSlicer.actions;
+export const { setValidationErrors,cleaerValidationErrors , clearUser} = RegistrationSlicer.actions;
 export default RegistrationSlicer.reducer;

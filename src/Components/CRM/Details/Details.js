@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import { Card } from "antd";
 import s from "./Detail.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { GET_DETAILS_SHOP } from "../../Redux/CrmSlicer";
+import { GET_DETAILS_SHOP } from "../../../Redux/CrmSlicer";
 const Details = () => {
    const dispatch = useDispatch()
    const { id } = useParams();
